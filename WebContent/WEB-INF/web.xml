@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <servlet>
+    <servlet-name>XmlCreator</servlet-name>
+    <servlet-class>com.xml.creator.XmlCreator</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DownloadShemaXML</servlet-name>
+    <servlet-class>com.xml.download.DownloadShemaXML</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>XmlCreator</servlet-name>
+    <url-pattern>/XmlCreator</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>DownloadShemaXML</servlet-name>
+    <url-pattern>/Download/*</url-pattern>
+  </servlet-mapping>
+   <welcome-file-list>
+            <welcome-file>pages/welcome.jsp</welcome-file>
+        </welcome-file-list>
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+</web-app>
