@@ -16,58 +16,71 @@ import com.xml.businesslogic.interfaces.ICreateXML;
 public class XmlCreator extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor. 
-     */
-    public XmlCreator() {
-    }
-
-    private void processRequest(HttpServletRequest request, HttpServletResponse response){
-    	ICreateXML.CreateXML createXMl = new ICreateXML.CreateXML();
-    	String fileShema =null;
-    	String path = System.getProperty("java.io.tmpdir");
-    	long before = System.currentTimeMillis();
-    	String urlForParsing = (request.getParameter("InputURL"));
-    	 
-    	try {
-			fileShema = createXMl.create(urlForParsing,(request.getServerName()+":"+request.getServerPort()+"/SesrviseServletXML/Download/"),path);
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} 
-    	    	
-		 long after = System.currentTimeMillis();
-		 String resTame = ("Time - " + (after - before) / 1000);
-		 request.setAttribute("statusOfWork", "DONE! Time : "+resTame);
-	 	request.setAttribute("sitemapFile", fileShema.replace(path, (request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/SesrviseServletXML/Download/")));
-    	
-    	 RequestDispatcher dispatcher = request.getRequestDispatcher("pages/urlGet.jsp");
-         if (dispatcher != null) {
-            try {
-				dispatcher.forward(request, response);
-			} catch (ServletException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-        }
-        	
-    }
-    
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * Default constructor.
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request,response);
-	    
+	public XmlCreator() {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request,response);
+	private void processRequest(HttpServletRequest request,	HttpServletResponse response) throws IOException,ServletException {
+		ICreateXML.CreateXML createXMl = new ICreateXML.CreateXML();
+		String fileShema = null;
+		String path = System.getProperty("java.io.tmpdir");
+		long before = System.currentTimeMillis();
+		String urlForParsing = (request.getParameter("InputURL"));
+
+		try {
+			fileShema = createXMl.create(urlForParsing,(request.getServerName() + ":"
+									+ request.getServerPort() + "/SesrviseServletXML/Download/"),path);
+		} catch (UnsupportedEncodingException e1) {
+			response.setContentType("text/html");
+			response.getWriter().print(e1.getStackTrace());
+			
+		} catch (IOException e1) {
+			response.setContentType("text/html");
+			response.getWriter().print(e1.getStackTrace());
+			
+		}
+
+		long after = System.currentTimeMillis();
+		String resTame = ("Time - " + (after - before) / 1000);
+		request.setAttribute("statusOfWork", "Time will update : " + resTame);
+		request.setAttribute("sitemapFile",	fileShema.replace(path,(request.getScheme() + "://" + request.getServerName()
+								+ ":" + request.getServerPort() + "/SesrviseServletXML/Download/")));
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("pages/urlGet.jsp");
+		if (dispatcher != null) {
+			try {
+				dispatcher.forward(request, response);
+			} catch (IOException e) {
+				response.setContentType("text/html");
+				response.getWriter().print("something is going wrong");
+			}
+		}
+
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
 	}
 
 }

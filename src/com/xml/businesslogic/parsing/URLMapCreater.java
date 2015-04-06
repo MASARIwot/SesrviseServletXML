@@ -32,6 +32,7 @@ public class URLMapCreater {
 		} else if (mainURL == " " || mainURL == null) {
 			throw new NullPointerException("Can not be NULL");
 		}
+		URLsession.isDone = false;
 		this.urlQueue = new ConcurrentLinkedQueue<String>();
 		this.executorPool = Executors.newFixedThreadPool(5);
 		this.mainURL = mainURL;
@@ -120,14 +121,6 @@ public class URLMapCreater {
 						e.printStackTrace();
 					}
 				}// if
-//				if (taskURL_5.isDone() && taskURL_4.isDone()
-//						&& taskURL_3.isDone() && taskURL_2.isDone()
-//						&& taskURL_1.isDone()) {
-//					if (urlQueue.isEmpty()) {
-//						
-//						break;
-//					}
-//				}
 
 			}// while
 			

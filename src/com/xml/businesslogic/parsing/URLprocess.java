@@ -28,7 +28,6 @@ public class URLprocess {
 			listOfLinks = new LinkedList<String>();
 			Document doc = Jsoup.connect(url).timeout(10000).get();
 			Elements link = doc.select("a[href]");
-			
 			for (Element links : link) {
 				if (!links.attr("abs:href").contains("#")) {
 					if (!links.attr("abs:href").toLowerCase()
@@ -43,7 +42,6 @@ public class URLprocess {
 										.matches(
 												".*\\.(doc|docx|pdf|rar|xml|jpg)$"))
 									listOfLinks.add(links.attr("abs:href"));
-							// System.out.println(listOfLinks.add(links.attr("abs:href")));
 						} else if (links.attr("href").trim().startsWith("/")
 								& !links.attr("abs:href").contains(url)) {
 							if (urlSession.addItemToSession(links.attr(
@@ -55,7 +53,6 @@ public class URLprocess {
 												".*\\.(doc|docx|pdf|rar|xml|jpg)$"))
 									listOfLinks.add(links.attr("abs:href")
 											.trim());
-							// System.out.println(listOfLinks.add(links.attr("abs:href").trim()));
 						}
 
 				}
@@ -66,42 +63,6 @@ public class URLprocess {
 		return listOfLinks;
 	}
 
-	// public static class GetURLinformation {
-	// private String url;
-	// private Connection.Response response;
-	//
-	// public static GetURLinformation getFromURL(String url)
-	// throws IOException {
-	// return new GetURLinformation(url);
-	// }
-	//
-	// public GetURLinformation(String url) throws IOException {
-	// this.url = url;
-	// response = Jsoup.connect(this.url).ignoreContentType(true)
-	// .execute();
-	// }
-	//
-	// public String getLastModified() {
-	// return response.header("Last-Modified");
-	// }
-	//
-	// public String getExpires() {
-	// return response.header("Expires");
-	// }
-	//
-	// @Deprecated
-	// @SuppressWarnings("unused")
-	// public Changefreq getChangeFreq() {
-	// String expires = getExpires();
-	// return Changefreq.always;
-	// }
-	//
-	// @Deprecated
-	// public String getPriority() {
-	// return "0.5";
-	// }
-	//
-	// }
 
 	public static class TestClass {
 
@@ -110,12 +71,6 @@ public class URLprocess {
 					.getURL("http://uawebchallenge.com/front-end")) {
 				System.out.println(str);
 			}
-			// System.out
-			// .println(URLprocess.GetURLinformation
-			// .getFromURL(
-			// "http://uawebchallenge.com/public/files/js/ckfinder/userfiles/files/%D0%9F%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0_Web_Challenge_VI%D0%86.pdf")
-			// .getLastModified());
-
 		}
 
 	}

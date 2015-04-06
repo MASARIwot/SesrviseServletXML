@@ -24,8 +24,13 @@ public class DownloadShemaXML extends HttpServlet {
 		super();
 	}
 
-	private void processRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	private void processRequest(HttpServletRequest request,	HttpServletResponse response) throws IOException {
 		String fileName = request.getPathInfo();
 		if (fileName.endsWith(".xsd")) {
 

@@ -16,14 +16,11 @@ public interface ICreateXML {
 
 	public String create(String url, String ServerLocation, String pathToSave)
 			throws UnsupportedEncodingException, IOException;
-	
-	
-	
 
 	public static class CreateXML implements ICreateXML {
 
-		private URLsession urlSession = null;// = URLsession.getInctance();
-		private FileSession fileSession = null;// FileSession.getInctance();
+		private URLsession urlSession = null;
+		private FileSession fileSession = null;
 		private URLFileWriter urlFileWriter = null;
 		private URLMapCreater urlMapCreator = null;
 
@@ -34,16 +31,14 @@ public interface ICreateXML {
 		}
 
 		@Override
-		public String create(String url, String ServerLocation)
-				throws UnsupportedEncodingException, IOException {
+		public String create(String url, String ServerLocation)	throws UnsupportedEncodingException, IOException {
 			String path = System.getProperty("java.io.tmpdir");
 			this.urlMapCreator = new URLMapCreater(url);
 			urlMapCreator.createMap();
 			while (URLsession.isDone == false) {
 			}
 			// urlSession.print();
-			this.urlFileWriter = new URLFileWriter(path,
-					urlSession.getSortedSession());
+			this.urlFileWriter = new URLFileWriter(path,urlSession.getSortedSession());
 			this.urlFileWriter.boss();
 			while (FileSession.isDone == false) {
 			}
@@ -52,17 +47,14 @@ public interface ICreateXML {
 		}
 
 		@Override
-		public String create(String url, String ServerLocation,
-				String pathToSave) throws UnsupportedEncodingException,
-				IOException {
+		public String create(String url, String ServerLocation,	String pathToSave) throws UnsupportedEncodingException,	IOException {
 			String path = pathToSave;
 			this.urlMapCreator = new URLMapCreater(url);
 			urlMapCreator.createMap();
 			while (URLsession.isDone == false) {
 			}
 			// urlSession.print();
-			this.urlFileWriter = new URLFileWriter(path,
-					urlSession.getSortedSession());
+			this.urlFileWriter = new URLFileWriter(path,urlSession.getSortedSession());
 			this.urlFileWriter.boss();
 			while (FileSession.isDone == false) {
 			}

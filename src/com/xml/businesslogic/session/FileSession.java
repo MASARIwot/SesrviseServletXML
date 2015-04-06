@@ -10,9 +10,11 @@ public class FileSession {
 	private volatile static FileSession instance;
 	public volatile static Boolean isDone = false;
 	private final Lock lock = new ReentrantLock();
+
 	private FileSession() {
 		fileList = new ArrayList<String>();
 	}
+
 	public static FileSession getInctance() {
 		if (instance == null) {
 			synchronized (URLsession.class) {
@@ -22,18 +24,21 @@ public class FileSession {
 		}
 		return instance;
 	}// getInctance
-	
-	
-	public void addFile(String file){
+
+	public void addFile(String file) {
 		lock.lock();
-		try{
-		fileList.add(file);
-		}finally{lock.unlock();}
+		try {
+			fileList.add(file);
+		} finally {
+			lock.unlock();
+		}
 	}
-	public void clrFileList(){
+
+	public void clrFileList() {
 		fileList = new ArrayList<String>();
 	}
-	public List<String> getFileList(){
+
+	public List<String> getFileList() {
 		return fileList;
 	}
 

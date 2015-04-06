@@ -18,7 +18,7 @@ public class FileSplitWriter implements Runnable {
 	@Override
 	public void run() {
 		
-		new URLFileWriter(this.path,this.urlShema,this.number);
+		new URLFileWriter(this.path,this.urlShema,this.number).boss();
 		
 	}
 

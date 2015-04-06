@@ -20,34 +20,22 @@ public class UrlBeans {
 		return loc;
 	}
 
-	// public void setLoc(String loc) {
-	// this.loc = loc;
-	// }
 	public String getLastmod() throws IOException {
 		return Gurl.getLastModified();
 	}
 
-	// public void setLastmod(String lastmod) {
-	// this.lastmod = lastmod;
-	// }
+
 	public String getChangefreq() {
 		return Gurl.getChangeFreq();
 	}
 
-	// public void setChangefreq(int changefreq) {
-	// this.changefreq = changefreq;
-	// }
 	public String getPriority() {
 		return Gurl.getPriority();
 	}
 
-	// public void setPriority(int priority) {
-	// this.priority = priority;
-	// }
-
 	protected static class GetURLinformation {
 		private String url;
-		private Connection.Response response ;
+		private Connection.Response response;
 
 		protected static GetURLinformation getFromURL(String url)
 				throws IOException {
