@@ -34,7 +34,7 @@ public interface ICreateXML {
 		public String create(String url, String ServerLocation)	throws UnsupportedEncodingException, IOException {
 			String path = System.getProperty("java.io.tmpdir");
 			this.urlMapCreator = new URLMapCreater(url);
-			urlMapCreator.createMaps(0);
+			urlMapCreator.createMap(0);
 			while (URLsession.isDone == false) {
 			}
 			// urlSession.print();
@@ -50,7 +50,7 @@ public interface ICreateXML {
 		public String create(String url, String ServerLocation,	String pathToSave) throws UnsupportedEncodingException,	IOException {
 			String path = pathToSave;
 			this.urlMapCreator = new URLMapCreater(url);
-			urlMapCreator.createMaps(0);
+			urlMapCreator.createMap(0);
 			while (URLsession.isDone == false) {
 			}
 			// urlSession.print();

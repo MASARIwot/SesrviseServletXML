@@ -10,10 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-
-
-
-
 import com.xml.businesslogic.file.FileShemaWriter;
 import com.xml.businesslogic.file.URLFileWriter;
 import com.xml.businesslogic.session.FileSession;
@@ -47,7 +43,7 @@ public class URLMapCreater {
 	}
 
 		
-	public void createMaps(int numberOfThread) throws IOException{
+	public void createMap(int numberOfThread) throws IOException{
 		if(numberOfThread == 0) numberOfThread = 5;
 		this.executorPool = Executors.newFixedThreadPool(numberOfThread);
 		this.available = new Semaphore(numberOfThread);
@@ -98,22 +94,10 @@ public class URLMapCreater {
 		}
 		
 		URLsession.isDone = true;
-		
-		
-	/*
-	  for (String word: args) {
-      Callable<Integer> callable = new WordLengthCallable(word);
-      Future<Integer> future = pool.submit(callable);
-      set.add(future);
-    }
-    int sum = 0;
-    for (Future<Integer> future : set) {
-      sum += future.get();
-    }
-	 * */	
+	
 	}
 	@Deprecated
-	public void createMap() {
+	public void createMap() throws IOException {
 //		this.urlQueue = new ConcurrentLinkedQueue<String>();
 		this.executorPool = Executors.newFixedThreadPool(5);
 		try {
@@ -228,7 +212,7 @@ public class URLMapCreater {
 			URLMapCreater aa = new URLMapCreater("http://uawebchallenge.com/");
 //			URLMapCreater aa = new URLMapCreater("http://hello.com/");
 //			urlSession.setMainURL("http://hello.com/");
-			aa.createMaps(0);
+			aa.createMap(0);
 			while(URLsession.isDone == false){}
 			urlSession.print();
 			String path = System.getProperty("java.io.tmpdir");
