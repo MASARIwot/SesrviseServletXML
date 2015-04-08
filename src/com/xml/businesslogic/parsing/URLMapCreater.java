@@ -1,18 +1,25 @@
 package com.xml.businesslogic.parsing;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+
+
+
 
 import com.xml.businesslogic.file.FileShemaWriter;
 import com.xml.businesslogic.file.URLFileWriter;
 import com.xml.businesslogic.session.FileSession;
 import com.xml.businesslogic.session.URLsession;
 import com.xml.businesslogic.thread.URLsurfer;
+import com.xml.businesslogic.thread.URLsurferSemaphore;
 
 public class URLMapCreater {
 
@@ -20,6 +27,7 @@ public class URLMapCreater {
 	private String mainURL;
 	private ExecutorService executorPool = null;// = Executors.newFixedThreadPool(5);
 	private ConcurrentLinkedQueue<String> urlQueue = null;// new ConcurrentLinkedQueue<String>();
+	private Semaphore available = null;
 	/**
 	 * @param mainURL
 	 * @throws IllegalArgumentException
@@ -32,21 +40,89 @@ public class URLMapCreater {
 		} else if (mainURL == " " || mainURL == null) {
 			throw new NullPointerException("Can not be NULL");
 		}
-		URLsession.isDone = false;
 		this.urlQueue = new ConcurrentLinkedQueue<String>();
-		this.executorPool = Executors.newFixedThreadPool(5);
 		this.mainURL = mainURL;
 		this.urlProcess = new URLprocess();
+		
 	}
 
-	public void createMap() {
+		
+	public void createMaps(int numberOfThread) throws IOException{
+		if(numberOfThread == 0) numberOfThread = 5;
+		this.executorPool = Executors.newFixedThreadPool(numberOfThread);
+		this.available = new Semaphore(numberOfThread);
+		Set<Future<List<String>>> set = new HashSet<>();
+		try {
+			urlQueue.addAll(urlProcess.getURL(mainURL));
+		} catch (IOException e) {
+			throw new IOException(e.getStackTrace().toString());
+		}
+			
+		URLsession.isDone = false;
+		try {
+			
+			while (true) {
+				if (!urlQueue.isEmpty()) {
+					if(urlQueue.size() >= numberOfThread){
+						for(int i = 0; i < numberOfThread; i++){
+							set.add(executorPool.submit(new URLsurferSemaphore(urlQueue.poll(),available)));
+						}
+					}else set.add(executorPool.submit(new URLsurferSemaphore(urlQueue.poll(),available)));
+				}
+				if (available.availablePermits() >= numberOfThread/2) {
+					for (Future<List<String>> future : set) {
+						try {
+							if(future.isDone()){
+							urlQueue.addAll(future.get());
+							set.remove(future);
+							}
+						} catch (InterruptedException | ExecutionException e) {
+							e.printStackTrace();
+						}
+					}
+				}//
+				if (available.availablePermits() == numberOfThread
+						&& urlQueue.isEmpty() == true)
+					break;
 
+			}
+		} finally {
+			try {
+
+				executorPool.shutdown();
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			}
+		}
+		while (executorPool.isTerminated() == false) {
+		}
+		
+		URLsession.isDone = true;
+		
+		
+	/*
+	  for (String word: args) {
+      Callable<Integer> callable = new WordLengthCallable(word);
+      Future<Integer> future = pool.submit(callable);
+      set.add(future);
+    }
+    int sum = 0;
+    for (Future<Integer> future : set) {
+      sum += future.get();
+    }
+	 * */	
+	}
+	@Deprecated
+	public void createMap() {
+//		this.urlQueue = new ConcurrentLinkedQueue<String>();
+		this.executorPool = Executors.newFixedThreadPool(5);
 		try {
 			//urlQueue.add(mainURL);
 			urlQueue.addAll(urlProcess.getURL(mainURL));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		URLsession.isDone = false;
 		try {
 			Future<List<String>> taskURL_1 = null;
 			Future<List<String>> taskURL_2 = null;
@@ -121,15 +197,16 @@ public class URLMapCreater {
 						e.printStackTrace();
 					}
 				}// if
-
+				
 			}// while
 			
 		} finally {
 			try{
+				
 			executorPool.shutdown();
 			}catch(SecurityException e){ e.printStackTrace();}
 		}
-		while(executorPool.isTerminated() == false){};
+		while(executorPool.isTerminated() == false){}
 		URLsession.isDone = true;
 		//
 
@@ -144,12 +221,14 @@ public class URLMapCreater {
 	public static class TestClass {
 
 		public static void main(String[] args) throws IOException {
+			
 			long before = System.currentTimeMillis();
 			URLsession urlSession = URLsession.getInctance();
 			// http://uawebchallenge.com/
 			URLMapCreater aa = new URLMapCreater("http://uawebchallenge.com/");
+//			URLMapCreater aa = new URLMapCreater("http://hello.com/");
 //			urlSession.setMainURL("http://hello.com/");
-			aa.createMap();
+			aa.createMaps(0);
 			while(URLsession.isDone == false){}
 			urlSession.print();
 			String path = System.getProperty("java.io.tmpdir");
@@ -159,6 +238,7 @@ public class URLMapCreater {
 			System.out.println(FileShemaWriter.write(path,"LocalHost/Download"));
 			long after = System.currentTimeMillis();
 			System.out.println("Time" + (after - before) / 1000);
+			
 
 		}
 
